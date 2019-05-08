@@ -1,0 +1,28 @@
+1 вывести список сотрудников, получающих зп большую чем у руководиеля
+select a.*
+from emp a
+where  salary>(select salary from emp where id = a.chief_id)
+
+2 вывести список сотрудников. получающих максимальную зп в своем отделе
+select a.*
+from emp a
+where a.salary = (select max(salary) from emp b
+		where b.dep_id = a.dep_id )
+
+3 вывести список id отделов, количество сотрудников которых не превышает 3 человек
+select a.dep_id
+from emp a
+where 3 > (select COUNT(dep_id) from emp b where a.dep_id = b.dep_id ) 
+
+4 вывести список сотрудников не имеющих назначенного руководителя в том же отделе
+select a.*
+from emp a, emp d
+where (d.id = a.chief_id and d.dep_id != a.dep_id) 
+неработает не находит с null
+
+5 найти список id отделов с максиальной суммарной зарплатой сотрудников
+with tableSum as  
+(select dep_id, SUM(salary) as sumsal from emp group by dep_id)
+select *
+from tableSum
+where sumsal = (select max(sumsal) from tableSum)
